@@ -12,7 +12,7 @@
 - [WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2#download)
 - [.NET 8.0 Runtime](https://dotnet.microsoft.com/id-id/download/dotnet/thank-you/runtime-8.0.12-windows-x64-installer)
 ### Get the Application
-Just download the latest ZIP from the Releases section!
+Just download the [latest archive](https://github.com/Bunz-Studio/eBrowser/releases/latest) from the Releases section!
 
 ## Features
 - Autosave viewed images/videos
