@@ -11,6 +11,7 @@ namespace eBrowser.Panels
 {
     public partial class ListPanel : UserControl
     {
+        public static ListPanel Instance;
         public ListMode listMode = ListMode.Posts;
 
         public ePosts? CurrentPosts { get; set; }
@@ -49,12 +50,25 @@ namespace eBrowser.Panels
 
         public ListPanel()
         {
+            Instance = this;
             InitializeComponent();
-            sortModeBox.SelectedIndex = 0;
         }
 
-        private void searchButton_Click(object sender, EventArgs e)
+        public void Initialize() {
+            SettingsPanel.LoadSettings(false);
+            sortModeBox.SelectedIndex = SettingsPanel.Main.SortMode;
+        }
+
+        public void searchButton_Click(object sender, EventArgs e)
         {
+            if (SettingsPanel.Main.GoBackToFirstPage) {
+                if (CurrentPosts != null) {
+                    if (CurrentPosts.Query != SearchQuery) {
+                        Page = 1;
+                    }
+                }
+            }
+
             Enabled = false;
             try
             {
@@ -398,6 +412,8 @@ namespace eBrowser.Panels
                     PostControls.Add(item);
                     index++;
                 }
+                SettingsPanel.Main.SortMode = sortModeBox.SelectedIndex;
+                SettingsPanel.SaveSettings();
                 postsLayoutPanel.ResumeLayout();
             }
         }

@@ -37,6 +37,9 @@ namespace eBrowser
             ];
             MovePanel(0);
 
+            SettingsPanel.LoadSettings(false);
+            listPanel.Initialize();
+
             if (LocalStorage.FileExists(LastPostsPath))
             {
                 var text = LocalStorage.ReadText(LastPostsPath);
@@ -60,7 +63,6 @@ namespace eBrowser
                 listPanel.LoadHistory(this.history.Keywords);
             }
 
-            SettingsPanel.LoadSettings();
             Load += MainForm_Load;
             Instance = this;
         }

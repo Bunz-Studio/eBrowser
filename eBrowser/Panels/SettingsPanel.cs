@@ -14,6 +14,7 @@ namespace eBrowser.Panels
         public static Settings Main = new Settings();
 
         private static bool isAppending = false;
+        private static bool alreadyLoaded;
 
         public SettingsPanel()
         {
@@ -21,8 +22,11 @@ namespace eBrowser.Panels
             InitializeComponent();
         }
 
-        public static void LoadSettings()
+        public static void LoadSettings(bool bypass = true)
         {
+            if (alreadyLoaded && !bypass)
+                return;
+
             if (LocalStorage.FileExists(MainForm.SettingsPath))
             {
                 var result = JsonSerializer.Deserialize<Settings>(LocalStorage.ReadText(MainForm.SettingsPath));
@@ -62,6 +66,7 @@ namespace eBrowser.Panels
             Instance.autoplayVideosBox.Checked = Main.AutoplayVideos;
             Instance.gifsOnListsBox.Checked = Main.PlayGIFsOnList;
             Instance.pauseHideBox.Checked = Main.PauseOnHide;
+            alreadyLoaded = true;
         }
 
         public static void SaveSettings()
@@ -225,6 +230,10 @@ namespace eBrowser.Panels
         // Quality
         public int ThumbnailQuality { get; set; } = 1;
         public int PostQuality { get; set; } = 2;
+        
+        // Post Sorting
+        public int SortMode { get; set; }
+        public bool GoBackToFirstPage { get; set; } = true;
 
         // Auto Download
         public bool AutoDownloadImage { get; set; } = true;
