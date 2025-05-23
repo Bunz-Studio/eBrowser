@@ -74,7 +74,7 @@ namespace e621NET
         }
 
         const int POSTS_HARD_LIMIT = 320;
-        public async Task<ePosts> GetPostsAsync(string? tags = null, int page = 1, int limit = -1)
+        public async Task<ePosts> GetPostsAsync(string tags = null, int page = 1, int limit = -1)
         {
             var postsUrl = GetUri(Host, "posts.json");
             var postsHtmlUrl = GetUri(Host, "posts");

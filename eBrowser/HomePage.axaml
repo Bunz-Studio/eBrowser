@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="eBrowser.HomePage">
+    <Border Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
+            BorderBrush="Gray" BorderThickness="1" Padding="15" CornerRadius="8">
+        <StackPanel x:Name="SearchPanel">
+            <TextBlock Text="eBrowser" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+            <TextBlock Text="Enter your search query below:" Margin="0,0,0,5"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBox x:Name="SearchBox" Width="300" Margin="0,0,5,0" KeyDown="SearchBox_OnKeyDown" TabIndex="0"/>
+                <Button x:Name="SearchButton" Content="Search" Width="100" Click="SearchButton_Click" TabIndex="1"/>
+            </StackPanel>
+            <Label x:Name="StatusLabel" IsVisible="False"/>
+        </StackPanel>
+    </Border>
+</UserControl>

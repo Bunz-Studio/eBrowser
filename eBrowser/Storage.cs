@@ -6,23 +6,23 @@ namespace eBrowser
 {
     public static class LocalStorage
     {
-        public static string persistentPath { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\eBrowser\\";
-        private static string _persistentPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\eBrowser\\";
+        public static string persistentPath { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/eBrowser/";
+        private static string _persistentPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/eBrowser/";
 
         public static void PushPersistentPath(string path) => persistentPath = path;
         public static void PopPersistentPath() => persistentPath = _persistentPath;
 
         public static string ToPersistPathOverride(this string path) =>
-            Path.IsPathRooted(path) ? Path.Combine(persistentPath, Path.GetFileName(path)) : Path.Combine(persistentPath, path);
+            Path.IsPathRooted(path) ? Path.Combine(persistentPath, Path.GetFileName(path)).Replace("\\", "/") : Path.Combine(persistentPath, path).Replace("\\", "/");
         public static string ToPersistPath(this string path) =>
-            Path.IsPathRooted(path) ? path : Path.Combine(persistentPath, path);
+            Path.IsPathRooted(path) ? path : Path.Combine(persistentPath, path).Replace("\\", "/");
         public static string GetPersistPath(params string[] paths)
         {
             string[] combinable = new string[paths.Length + 1];
             combinable[0] = persistentPath;
             for (int i = 0; i < paths.Length; i++)
                 combinable[i + 1] = paths[i];
-            return Path.Combine(combinable);
+            return Path.Combine(combinable).Replace("\\", "/");
         }
         public static string Combine(params string[] paths) => Path.Combine(paths);
 
@@ -38,11 +38,6 @@ namespace eBrowser
             File.Exists(path.ToPersistPath());
         public static bool DirectoryExists(string path) =>
             Directory.Exists(path.ToPersistPath());
-        public static void CreateForceDirectory(this string path)
-        {
-            if (!DirectoryExists(path))
-                CreateDirectory(path);
-        }
         public static void CreateDirectory(string path)
         {
             path = path.ToPersistPath();

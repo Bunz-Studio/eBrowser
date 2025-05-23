@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="eBrowser.PostItem"
+             MinHeight="200" MinWidth="150">
+    <Border BorderBrush="#00458a" BorderThickness="1">
+        <Button Background="#00254a"
+                Foreground="#ffffff"
+                FontSize="14"
+                Padding="0"
+                BorderBrush="#000"
+                BorderThickness="0"
+                CornerRadius="0" Click="Button_OnClick">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="170"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+
+                <Image x:Name="PostImage"
+                       Grid.Row="0"
+                       Stretch="Uniform"
+                       Height="170"
+                       Width="150"/>
+
+                <Border Grid.Row="1" BorderBrush="#00458a" BorderThickness="1">
+                    <Label x:Name="PostCondition"
+                           HorizontalContentAlignment="Center"
+                           VerticalAlignment="Center"/>
+                </Border>
+            </Grid>
+        </Button>
+    </Border>
+</UserControl>

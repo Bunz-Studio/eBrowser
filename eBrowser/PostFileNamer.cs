@@ -12,7 +12,7 @@ namespace eBrowser
         {
             string? ext = Path.GetExtension(post.File.Url);
             string fileName = FileNameFormat.Replace("{artist}", post.Tags.Artist.FirstOrDefault()).Replace("{id}", post.Id.ToString()).Replace("{ext}", ext);
-            return Path.Combine(MainForm.PostsPath.ToPersistPath(), fileName);
+            return Path.Combine("full".ToPersistPath(), fileName);
         }
     }
 }

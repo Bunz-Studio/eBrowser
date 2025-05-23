@@ -1,0 +1,72 @@
+<Styles xmlns="https://github.com/avaloniaui">
+    <!-- Global Window Style -->
+    <Style Selector="Window">
+        <Setter Property="Background" Value="#00254a"/>
+        <Setter Property="Foreground" Value="#ffffff"/>
+    </Style>
+
+    <!-- TextBlock Style -->
+    <Style Selector="TextBlock">
+        <Setter Property="Foreground" Value="#ffffff"/>
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+
+    <!-- Button Style -->
+    <Style Selector="Button">
+        <Setter Property="Background" Value="#014995"/>
+        <Setter Property="Foreground" Value="#ffffff"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="BorderBrush" Value="#bbb"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="4"/>
+
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="#003775"/>
+            <Setter Property="Foreground" Value="#ffffff"/>
+        </Style>
+
+        <Style Selector="^:pressed">
+            <Setter Property="Background" Value="#012e57"/>
+            <Setter Property="Foreground" Value="#ffffff"/>
+        </Style>
+    </Style>
+    
+    <Style Selector="ListBox">
+        <Setter Property="Background" Value="#012e57"/>
+        <Setter Property="BorderBrush" Value="#bbb"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="3"/>
+    </Style>
+
+    <!-- TextBox Style -->
+    <Style Selector="TextBox">
+        <Setter Property="Background" Value="#012e57"/>
+        <Setter Property="Foreground" Value="#ffffff"/>
+        <Setter Property="BorderBrush" Value="#bbb"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="6"/>
+        <Setter Property="CornerRadius" Value="3"/>
+
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="#003775"/>
+            <Setter Property="Foreground" Value="#ffffff"/>
+        </Style>
+
+        <Style Selector="^:focus">
+            <Setter Property="Background" Value="#012e57"/>
+            <Setter Property="Foreground" Value="#ffffff"/>
+        </Style>
+    </Style>
+
+    <!-- CheckBox Style -->
+    <Style Selector="CheckBox">
+        <Setter Property="Foreground" Value="#ffffff"/>
+    </Style>
+
+    <Style Selector="CheckBox:checked /template/ Border">
+        <Setter Property="Background" Value="#bbb"/>
+        <Setter Property="BorderBrush" Value="#bbb"/>
+    </Style>
+</Styles>
