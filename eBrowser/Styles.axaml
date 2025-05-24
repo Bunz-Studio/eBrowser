@@ -60,6 +60,33 @@
         </Style>
     </Style>
 
+    <!-- ComboBox Style -->
+    <Style Selector="ComboBox">
+        <Setter Property="Background" Value="#012e57"/>
+        <Setter Property="Foreground" Value="#ffffff"/>
+        <Setter Property="BorderBrush" Value="#bbb"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="6"/>
+        <Setter Property="CornerRadius" Value="3"/>
+    </Style>
+
+    <Style Selector="ComboBoxItem">
+        <Setter Property="Foreground" Value="#ffffff"/>
+        <Setter Property="Padding" Value="6"/>
+        <Setter Property="CornerRadius" Value="3"/>
+    </Style>
+
+    <Style Selector="ComboBoxItem:pressed">
+        <Setter Property="Background" Value="#012e57"/>
+        <Setter Property="Foreground" Value="#ffffff"/>
+    </Style>
+
+    <Style Selector="ComboBoxItem:selected">
+        <Setter Property="Background" Value="#012e57"/>
+        <Setter Property="Foreground" Value="#ffffff"/>
+    </Style>
+
     <!-- CheckBox Style -->
     <Style Selector="CheckBox">
         <Setter Property="Foreground" Value="#ffffff"/>

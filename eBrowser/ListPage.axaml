@@ -13,6 +13,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Button x:Name="PreviousPageButton" Grid.Column="0" Content="&lt;"/>
                     <TextBlock x:Name="PageLabel" Grid.Column="1" TextAlignment="Center" VerticalAlignment="Center" Text="1/750"/>
@@ -25,6 +26,18 @@
                     </Grid.ColumnDefinitions>
                     <TextBox x:Name="SearchBox" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0, 0, 5, 0" KeyDown="SearchBox_OnKeyDown"/>
                     <Button x:Name="SearchButton" Grid.Column="1" Content="Search" Click="SearchButton_OnClick"/>
+                </Grid>
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Sort" Grid.Column="0"/>
+                    <ComboBox x:Name="SortBox" Grid.Column="1" HorizontalAlignment="Stretch" SelectedIndex="0">
+                        <ComboBoxItem Content="Date"/>
+                        <ComboBoxItem Content="Favorite"/>
+                        <ComboBoxItem Content="Score"/>
+                    </ComboBox>
                 </Grid>
             </StackPanel>
         </Border>
