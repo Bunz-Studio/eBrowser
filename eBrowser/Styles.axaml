@@ -34,9 +34,12 @@
     
     <Style Selector="ListBox">
         <Setter Property="Background" Value="#012e57"/>
-        <Setter Property="BorderBrush" Value="#bbb"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="3"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    
+    <Style Selector="ListBoxItem">
+        <Setter Property="Padding" Value="2"/>
     </Style>
 
     <!-- TextBox Style -->

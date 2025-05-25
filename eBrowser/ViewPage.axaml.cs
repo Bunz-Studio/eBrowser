@@ -2,12 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
+using e621NET;
 using e621NET.Data.Posts;
 
 namespace eBrowser
@@ -30,30 +37,26 @@ namespace eBrowser
             InitializeComponent();
             VideoHtml = ToString(AssetLoader.Open(new Uri("avares://eBrowser/Assets/video-view.html")));
             ImageHtml = ToString(AssetLoader.Open(new Uri("avares://eBrowser/Assets/image-view.html")));
+            
             webView.Navigated += WebViewOnNavigated;
-            webView.ShowDeveloperTools();
+            webView.Focusable = true;
         }
-
+        
         async void WebViewOnNavigated(string url, string framename)
         {
             if (CurrentPost == null) return;
-
-            PageLabel.Text = "Loaded " + framename;
-            await Task.Delay(1000);
             try
             {
                 var ext = CurrentPost.File.Ext ?? "png";
                 if (videoFormats.Contains(ext.ToLower()))
                 {
-                    webView.ExecuteScript("document.getElementById(\"vid\").play();");
+                    webView.ExecuteScript("playVideo();");
                 }
-                PageLabel.Text = "Playing " + framename;
-            } catch (Exception e)
+            } 
+            catch (Exception e)
             {
                 Debug.WriteLine(e);
-                PageLabel.Text = "Failed to play " + framename + ": " + e.Message;
             }
-
         }
 
         public static string ToString(Stream stream)
@@ -72,6 +75,7 @@ namespace eBrowser
             TagsList.Items.Clear();
             ArtistsList.Items.Clear();
             CharactersList.Items.Clear();
+            SourcesList.Items.Clear();;
             PoolsList.Items.Clear();
 
             foreach (var tag in post.Tags.Artist)
@@ -88,9 +92,16 @@ namespace eBrowser
                 TagsList.Items.Add(tag);
             foreach (var tag in post.Tags.Meta)
                 TagsList.Items.Add(tag);
-            
+            foreach (var source in post.Sources)
+                SourcesList.Items.Add(source);
             foreach (var id in post.Pools)
                 PoolsList.Items.Add(id);
+            
+            ArtistsList.IsVisible = ArtistsList.Items.Count > 0;
+            CharactersList.IsVisible = CharactersList.Items.Count > 0;
+            TagsList.IsVisible = TagsList.Items.Count > 0;
+            SourcesList.IsVisible = SourcesList.Items.Count > 0;
+            PoolsList.IsVisible = PoolsList.Items.Count > 0;
             
             var quality = 2;
             if (post.File.Ext != null && videoFormats.Contains(post.File.Ext)) {
@@ -150,6 +161,18 @@ namespace eBrowser
                 else
                     OpenHTMLStringToFile(ImageHtml.Replace("{IMAGE_URL}", FileUrl));
             }
+            DownloadFile();
+            if (webView.IsAttachedToVisualTree())
+            {
+                webView.Focus();
+            }
+            else
+            {
+                webView.AttachedToVisualTree += (s, e) =>
+                {
+                    webView.Focus();
+                };
+            }
         }
         
         List<string> videoFormats = new List<string>() {
@@ -161,23 +184,109 @@ namespace eBrowser
         public void OpenHTMLStringToFile(string text) {
             File.WriteAllText("temporary.html".ToPersistPath(), text);
             webView.Address = "file://" + "temporary.html".ToPersistPath();
+            webView.Reload();
         }
         
-        void BackButton_OnClick(object? sender, RoutedEventArgs e)
+        public void BackButton_OnClick(object? sender, RoutedEventArgs e)
         {
+            try
+            {
+                if (CurrentPost == null) return;
+                var ext = CurrentPost.File.Ext ?? "png";
+                if (videoFormats.Contains(ext.ToLower()))
+                {
+                    webView.ExecuteScript("pauseVideo();");
+                }
+            } 
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
             onBackPressed?.Invoke();
         }
-        
-        void PreviousPageButton_OnClick(object? sender, RoutedEventArgs e)
+
+        void PreviousPageButton_OnClick(object? sender, RoutedEventArgs e) => PreviousPage();
+        public void PreviousPage()
         {
             Index--;
             if (Index < 0)
             {
-                Index = 0;
-                return;
+                Index = Posts!.Posts.Count - 1;
             }
 
             LoadPost(Posts!, Index);
+        }
+
+        void NextPageButton_OnClick(object? sender, RoutedEventArgs e) => NextPage();
+        public void NextPage()
+        {
+            Index++;
+            if (Index >= Posts!.Posts.Count)
+            {
+                Index = 0;
+            }
+            LoadPost(Posts!, Index);
+        }
+
+        public async void DownloadFile()
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(FilePath) && File.Exists(FilePath))
+                {
+                    return;
+                }
+
+                var bytes = await e621Client.HttpClient.GetByteArrayAsync(FileUrl);
+
+                if (!string.IsNullOrWhiteSpace(FilePath))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
+                    await File.WriteAllBytesAsync(FilePath, bytes);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Failed to load image: " + FileUrl);
+                Debug.WriteLine(e);
+            }
+        }
+        
+        void WebView_OnKeyDown(object? sender, KeyEventArgs e)
+        {
+            MainWindow.Instance.OnKeyDownHere(sender, e);
+        }
+        
+        void WebView_OnInitialized(object? sender, EventArgs e)
+        {
+            var handler = new JsEventHandler();
+            webView.RegisterJavascriptObject("dotNetHandler", handler);
+        }
+
+        public class JsEventHandler
+        {
+            public void Notify(string message)
+            {
+                var keyEvent = JsonSerializer.Deserialize<KeyEventData>(message);
+                if (keyEvent != null)
+                    Dispatcher.UIThread.Post(() => { MainWindow.Instance.OnKeyDown(keyEvent.Key); });
+            }
+        }
+        
+        public class KeyEventData
+        {
+            [JsonPropertyName("key")]
+            public string Key { get; set; }
+            [JsonPropertyName("code")]
+            public string Code { get; set; }
+            [JsonPropertyName("ctrl")]
+            public bool Ctrl { get; set; }
+            [JsonPropertyName("shift")]
+            public bool Shift { get; set; }
+            [JsonPropertyName("alt")]
+            public bool Alt { get; set; }
+            [JsonPropertyName("meta")]
+            public bool Meta { get; set; }
         }
     }
 }

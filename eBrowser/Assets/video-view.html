@@ -5,4 +5,18 @@
 </style>
 <video id="vid" class="cover" controls loop{ADDITIONAL_PARAM}> <source id="video-source" src="{VIDEO_URL}"> Your browser does not support the video tag. </video>
 <script> function playVideo() { document.getElementById("vid").play(); } function pauseVideo() { document.getElementById("vid").pause(); } </script>
+<script>
+    document.addEventListener("keydown", function (e) {
+        if (dotNetHandler.notify) {
+            dotNetHandler.notify(JSON.stringify({
+                key: e.key,
+                code: e.code,
+                ctrl: e.ctrlKey,
+                shift: e.shiftKey,
+                alt: e.altKey,
+                meta: e.metaKey
+            }));
+        }
+    });
+</script>
 </body>

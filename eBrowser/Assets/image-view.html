@@ -12,4 +12,18 @@
 	}
 </style>
 <img id="main-img" class="cover" src="{IMAGE_URL}"/>
+<script>
+    document.addEventListener("keydown", function (e) {
+        if (dotNetHandler.notify) {
+            dotNetHandler.notify(JSON.stringify({
+                key: e.key,
+                code: e.code,
+                ctrl: e.ctrlKey,
+                shift: e.shiftKey,
+                alt: e.altKey,
+                meta: e.metaKey
+            }));
+        }
+    });
+</script>
 </body>

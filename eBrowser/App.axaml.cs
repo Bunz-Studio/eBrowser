@@ -22,8 +22,5 @@ public partial class App : Application
         
         LocalStorage.GetPersistPath("previews").CreateForceDirectory();
         LocalStorage.GetPersistPath("full").CreateForceDirectory();
-        LocalStorage.GetPersistPath("data").CreateForceDirectory();
-        LocalStorage.GetPersistPath("pages").CreateForceDirectory();
-        LocalStorage.GetPersistPath("info").CreateForceDirectory();
     }
 }

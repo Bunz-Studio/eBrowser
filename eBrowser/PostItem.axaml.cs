@@ -4,14 +4,21 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
+using e621NET;
 using e621NET.Data.Posts;
 
 namespace eBrowser
 {
     public partial class PostItem : UserControl
     {
+        public ePosts Posts { get; set; } = new();
+        public int Index { get; set; } = -1;
+        public ePost Post { get; set; } = new();
+        public event EventHandler<EventArgs>? OnClicked;
+        
         public PostItem()
         {
             InitializeComponent();
@@ -19,6 +26,7 @@ namespace eBrowser
         
         public async Task SetPost(ePost post)
         {
+            Post = post;
             try
             {
                 var favorites = post.FavCount;
@@ -42,16 +50,19 @@ namespace eBrowser
             }
         }
         
-        public event EventHandler<EventArgs> OnClicked;
         void Button_OnClick(object? sender, RoutedEventArgs e)
         {
             OnClicked?.Invoke(this, EventArgs.Empty);
+            ListPage.Instance.ItemClicked(new PostClickedArgs(Posts, Index));
+        }
+        
+        void InputElement_OnKeyDown(object? sender, KeyEventArgs e)
+        {
+            MainWindow.Instance.OnKeyDownHere(sender, e);
         }
     }
     public static class ImageExtensions
     {
-        private static readonly HttpClient _httpClient = new HttpClient();
-
         public static async Task<Bitmap?> LoadImageAsync(Uri uri, string? fileName = null, bool loadIfFileExists = false)
         {
             try
@@ -62,7 +73,7 @@ namespace eBrowser
                     return new Bitmap(fileStream);
                 }
 
-                var bytes = await _httpClient.GetByteArrayAsync(uri);
+                var bytes = await e621Client.HttpClient.GetByteArrayAsync(uri);
 
                 if (!string.IsNullOrWhiteSpace(fileName))
                 {

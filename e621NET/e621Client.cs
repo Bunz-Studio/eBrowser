@@ -20,15 +20,25 @@ namespace e621NET
     public class e621Client : HttpClientHandler
     {
         #region Variables
-        public static e621Client Current => _Client = _Client ?? new e621Client();
-        private static e621Client _Client = new e621Client();
+        public static readonly HttpClient HttpClient;
+        public static e621Client Current { get; private set; }
+    
         public static bool DebugMode { get; set; }
 
         public string Host { get; set; }
         public e621ClientOptions Options { get; private set; }
         internal List<e621ClientHeader> DefaultHeaders { get; private set; } = new List<e621ClientHeader>();
+        
+        static e621Client()
+        {
+            Current = new e621Client();
+            HttpClient = new HttpClient(Current, disposeHandler: true)
+            {
+                Timeout = TimeSpan.FromSeconds(30)
+            };
+        }
 
-        public e621Client() : base()
+        e621Client() : base()
         {
             Host = "https://e621.net/";
             Options = new e621ClientOptions();
@@ -68,19 +78,19 @@ namespace e621NET
 
         private static string BTOA(string toEncode)
         {
-            byte[] bytes = Encoding.GetEncoding(28591).GetBytes(toEncode);
-            string toReturn = Convert.ToBase64String(bytes);
+            var bytes = Encoding.GetEncoding(28591).GetBytes(toEncode);
+            var toReturn = Convert.ToBase64String(bytes);
             return toReturn;
         }
 
         const int POSTS_HARD_LIMIT = 320;
-        public async Task<ePosts> GetPostsAsync(string tags = null, int page = 1, int limit = -1)
+        public async Task<ePosts?> GetPostsAsync(string? tags = null, int page = 1, int limit = -1)
         {
             var postsUrl = GetUri(Host, "posts.json");
             var postsHtmlUrl = GetUri(Host, "posts");
 
             string? queryString = null;
-            if (!string.IsNullOrWhiteSpace(tags) && tags != null)
+            if (!string.IsNullOrWhiteSpace(tags))
                 queryString = $"tags={HttpUtility.UrlEncode(tags)}";
             if (page > 1)
                 queryString += $"&page={page}";
@@ -122,7 +132,7 @@ namespace e621NET
                             var document = new HtmlDocument();
                             document.LoadHtml(response.Content);
 
-                            var paginator = document.DocumentNode.SelectSingleNode("//*[@id=\"posts\"]/div");
+                            var paginator = document.DocumentNode.SelectSingleNode("/html/body/div[1]/div[3]/div/div/div[3]/div[4]/nav");
                             if (paginator == null)
                                 throw new e621ClientException(ClientErrorType.Deserialization, "The server returns a non-post type response") { Content = response.Content };
 
@@ -143,10 +153,8 @@ namespace e621NET
                     throw new e621ClientException(ClientErrorType.Deserialization, e.Message) { Content = response.Content };
                 }
             }
-            else
-            {
-                throw new e621ClientException(ClientErrorType.Network, "The server doesn't return a valid response");
-            }
+            
+            throw new e621ClientException(ClientErrorType.Network, "The server doesn't return a valid response");
         }
 
         public async Task<ePosts> GetPoolPostsAsync(int id, int page = 1)

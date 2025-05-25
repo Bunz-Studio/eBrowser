@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace e621NET.Data.Posts
@@ -13,6 +14,9 @@ namespace e621NET.Data.Posts
         public List<ePost> Posts { get; set; } = new List<ePost>();
         [JsonPropertyName("page")]
         public int Page { get; set; } = 1;
+
+        [JsonPropertyName("fetchedAt")]
+        public DateTime FetchedAt { get; set; } = DateTime.Now;
         [JsonPropertyName("query")]
         public string Query { get; set; } = "";
         [JsonPropertyName("limit")]

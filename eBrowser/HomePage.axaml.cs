@@ -33,8 +33,15 @@ namespace eBrowser
             
                 var posts = await e621Client.Current.GetPostsAsync(SearchBox.Text);
                 StatusLabel.IsVisible = true;
-                StatusLabel.Content = "Found " + posts.Posts.Count + " posts";
-                onSearchFinished?.Invoke(posts);
+                if (posts != null)
+                {
+                    StatusLabel.Content = "Found " + posts.Posts.Count + " posts";
+                    onSearchFinished?.Invoke(posts);
+                }
+                else
+                {
+                    StatusLabel.Content = "No posts found";
+                }
             }
             catch (Exception ex)
             {

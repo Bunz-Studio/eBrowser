@@ -8,44 +8,28 @@
     <DockPanel LastChildFill="True">
         <Border Width="250" BorderBrush="Gray" BorderThickness="1" DockPanel.Dock="Left" Padding="5">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Spacing="5">
-                <Grid HorizontalAlignment="Stretch">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Button x:Name="PreviousPageButton" Grid.Column="0" Content="&lt;"/>
+                <Grid HorizontalAlignment="Stretch" ColumnDefinitions="Auto,*,Auto,Auto">
+                    <Button x:Name="PreviousPageButton" Grid.Column="0" Content="&lt;" Click="PreviousPageButton_OnClick"/>
                     <TextBlock x:Name="PageLabel" Grid.Column="1" TextAlignment="Center" VerticalAlignment="Center" Text="1/750"/>
-                    <Button x:Name="NextPageButton" Grid.Column="2" Content="&gt;"/>
+                    <Button x:Name="NextPageButton" Grid.Column="2" Content="&gt;" Click="NextPageButton_OnClick"/>
                 </Grid>
-                <Grid HorizontalAlignment="Stretch">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+                <Grid HorizontalAlignment="Stretch" ColumnDefinitions="*,Auto">
                     <TextBox x:Name="SearchBox" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0, 0, 5, 0" KeyDown="SearchBox_OnKeyDown"/>
                     <Button x:Name="SearchButton" Grid.Column="1" Content="Search" Click="SearchButton_OnClick"/>
                 </Grid>
-                <Grid HorizontalAlignment="Stretch">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Content="Sort" Grid.Column="0"/>
-                    <ComboBox x:Name="SortBox" Grid.Column="1" HorizontalAlignment="Stretch" SelectedIndex="0">
+                <Grid HorizontalAlignment="Stretch" ColumnSpacing="5" ColumnDefinitions="Auto,*">
+                    <Label Content="Sort" Grid.Column="0" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
+                    <ComboBox x:Name="SortBox" Grid.Column="1" HorizontalAlignment="Stretch" SelectedIndex="0" SelectionChanged="SortBox_OnSelectionChanged">
                         <ComboBoxItem Content="Date"/>
                         <ComboBoxItem Content="Favorite"/>
                         <ComboBoxItem Content="Score"/>
                     </ComboBox>
                 </Grid>
+                <Label Content="Session Details"></Label>
+                <ListBox x:Name="SessionDetails"></ListBox>
             </StackPanel>
         </Border>
-        <Border BorderBrush="Gray" BorderThickness="1" Padding="5">
-            <ScrollViewer>
-                <WrapPanel x:Name="PostList" Orientation="Horizontal" ItemSpacing="5" LineSpacing="5">
-                </WrapPanel>
-            </ScrollViewer>
+        <Border x:Name="PostPanel" BorderBrush="Gray" BorderThickness="1" Padding="5">
         </Border>
     </DockPanel>
 </UserControl>
