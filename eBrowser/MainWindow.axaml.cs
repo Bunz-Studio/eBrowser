@@ -3,14 +3,14 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using e621NET.Data.Posts;
-using Avalonia.Input;
-using Avalonia.Input.Raw;
 
 namespace eBrowser;
 
 public partial class MainWindow : Window
 {
+    public static bool ForceClose = false;
     public static MainWindow Instance = null!;
+    public static MenuMode mode = MenuMode.Home;
     readonly HomePage _homePage = new();
     readonly ListPage _listPage = new();
     readonly ViewPage _viewPage = new();
@@ -19,8 +19,9 @@ public partial class MainWindow : Window
     {
         Instance = this;
         InitializeComponent();
+        if (Design.IsDesignMode) return;
+        
         Initialize();
-
         AddHandler(KeyDownEvent, OnKeyDownHere, RoutingStrategies.Tunnel, handledEventsToo: true);
     }
 
@@ -33,24 +34,17 @@ public partial class MainWindow : Window
             {
                 session.Path = "posts.json".ToPersistPath();
                 _listPage.session = session;
-                if (session.LastPageFromSession < 1)
+                var posts = session.LastPageFromSession < 1 ? await session.GetPageAsync(1) : await session.GetPageAsync(session.LastPageFromSession);
+                if (posts != null)
                 {
-                    var posts = await session.GetPageAsync(1);
-                    if (posts != null)
-                        _listPage.SetPosts(posts);
-                    else
-                        Content = _homePage;
+                    _listPage.SetPosts(posts);
+                    Content = _listPage;
+                    mode = MenuMode.Listing;
                 }
                 else
                 {
-                    var posts = await session.GetPageAsync(session.LastPageFromSession);
-                    if (posts != null)
-                        _listPage.SetPosts(posts);
-                    else
-                        Content = _homePage;
+                    Content = _homePage;
                 }
-
-                Content = _listPage;
             }
             else
             {
@@ -70,18 +64,21 @@ public partial class MainWindow : Window
     void ViewPageOnBackPressed()
     {
         Content = _listPage;
+        mode = MenuMode.Listing;
     }
 
     void ListPageOnPostClicked(object? sender, PostClickedArgs e)
     {
         _viewPage.LoadPost(e.Posts, e.Index);
         Content = _viewPage;
+        mode = MenuMode.Viewer;
     }
 
     void HomePageSearchFinished(ePosts obj)
     {
         Content = _listPage;
         _listPage.InitializeNewState(obj);
+        mode = MenuMode.Listing;
     }
 
     public void OnKeyDownHere(object? sender, KeyEventArgs e)
@@ -131,11 +128,14 @@ public partial class MainWindow : Window
             }
             case Key.Enter:
             {
-                if (Equals(Content, _listPage) && _listPage is { IsEnabled: true, CurrentView.Items.Count: > 0 })
+                if (IsFocused)
                 {
-                    e.Handled = true;
-                    var item = _listPage.CurrentView.Items[0];
-                    ListPageOnPostClicked(this, new PostClickedArgs(item.Posts, item.Index));
+                    if (Equals(Content, _listPage) && _listPage is { IsEnabled: true, CurrentView.Items.Count: > 0 })
+                    {
+                        e.Handled = true;
+                        var item = _listPage.CurrentView.Items[0];
+                        ListPageOnPostClicked(this, new PostClickedArgs(item.Posts, item.Index));
+                    }
                 }
 
                 break;
@@ -172,8 +172,20 @@ public partial class MainWindow : Window
                 _viewPage.BackButton_OnClick(this, new RoutedEventArgs());
         }
     }
-    
-    void InputElement_OnGotFocus(object? sender, GotFocusEventArgs e)
+    void Window_OnClosing(object? sender, WindowClosingEventArgs e)
     {
+        if (ForceClose)
+            return;
+
+        e.Cancel = true;
+        Hide();
     }
+}
+
+public enum MenuMode
+{
+    Home,
+    Listing,
+    Viewer,
+    Settings
 }

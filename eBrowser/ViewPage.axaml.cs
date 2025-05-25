@@ -45,6 +45,8 @@ namespace eBrowser
         async void WebViewOnNavigated(string url, string framename)
         {
             if (CurrentPost == null) return;
+            if (MainWindow.mode != MenuMode.Viewer) return;
+            
             try
             {
                 var ext = CurrentPost.File.Ext ?? "png";
@@ -142,7 +144,7 @@ namespace eBrowser
                 }
             }
             
-            string ext = post.File.Ext == null ? "png" : post.File.Ext;
+            var ext = post.File.Ext ?? "png";
             if (videoFormats.Contains(ext.ToLower())) {
                 if (File.Exists(FilePath))
                     OpenHTMLStringToFile(
