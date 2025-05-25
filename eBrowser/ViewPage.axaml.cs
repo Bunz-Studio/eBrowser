@@ -104,6 +104,8 @@ namespace eBrowser
             TagsList.IsVisible = TagsList.Items.Count > 0;
             SourcesList.IsVisible = SourcesList.Items.Count > 0;
             PoolsList.IsVisible = PoolsList.Items.Count > 0;
+
+            int width, height, size;
             
             var quality = 2;
             if (post.File.Ext != null && videoFormats.Contains(post.File.Ext)) {
@@ -111,38 +113,58 @@ namespace eBrowser
                 if (quality == 0) {
                     if (post.Sample.Alternates!.Quality480 != null) {
                         FileUrl = post.Sample.Alternates.Quality480.Urls[0];
+                        width = post.Sample.Alternates.Quality480.Width;
+                        height = post.Sample.Alternates.Quality480.Height; 
                     } else {
                         FileUrl = post.File.Url ?? string.Empty;
+                        width = post.File.Width;
+                        height = post.File.Height;
                     }
                 }
                 // Medium
                 else if (quality == 1) {
                     if (post.Sample.Alternates!.Quality720 != null) {
                         FileUrl = post.Sample.Alternates.Quality720.Urls[0];
+                        width = post.Sample.Alternates.Quality720.Width;
+                        height = post.Sample.Alternates.Quality720.Height;
                     } else if (post.Sample.Alternates!.Quality480 != null) {
                         FileUrl = post.Sample.Alternates.Quality480.Urls[0];
+                        width = post.Sample.Alternates.Quality480.Width;
+                        height = post.Sample.Alternates.Quality480.Height;
                     } else {
                         FileUrl = post.File.Url ?? string.Empty;
+                        width = post.File.Width;
+                        height = post.File.Height;
                     }
                 }
                 // High
                 else {
                     FileUrl = post.File.Url ?? string.Empty;
+                    width = post.File.Width;
+                    height = post.File.Height;
                 }
             } else {
                 // Low
                 if (quality == 0) {
                     FileUrl = post.Preview.Url ?? string.Empty;
+                    width = post.Preview.Width;
+                    height = post.Preview.Height;
                 }
                 // Medium
                 else if (quality == 1) {
                     FileUrl = post.Sample.Url ?? string.Empty;
+                    width = post.Sample.Width;
+                    height = post.Sample.Height;
                 }
                 // High
                 else {
                     FileUrl = post.File.Url ?? string.Empty;
+                    width = post.File.Width;
+                    height = post.File.Height;
                 }
             }
+
+            BasicInfoLabel.Content = $"{width} x {height} | {post.File.Ext} | {FormatBytes(post.File.Size)} MB";
             
             var ext = post.File.Ext ?? "png";
             if (videoFormats.Contains(ext.ToLower())) {
@@ -182,6 +204,21 @@ namespace eBrowser
             "webm",
             "m4a"
         };
+        
+        public static string FormatBytes(long bytes) {
+            string[] sizeSuffixes = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+
+            int i = 0;
+            double dblSByte = bytes;
+
+            if (bytes > 1024) {
+                for (i = 0; (bytes / 1024) > 0; i++, bytes /= 1024) {
+                    dblSByte = bytes / 1024.0;
+                }
+            }
+
+            return string.Format("{0:0.##} {1}", dblSByte, sizeSuffixes[i]);
+        }
         
         public void OpenHTMLStringToFile(string text) {
             File.WriteAllText("temporary.html".ToPersistPath(), text);
@@ -235,17 +272,15 @@ namespace eBrowser
             try
             {
                 if (!string.IsNullOrWhiteSpace(FilePath) && File.Exists(FilePath))
-                {
                     return;
-                }
 
                 var bytes = await e621Client.HttpClient.GetByteArrayAsync(FileUrl);
 
-                if (!string.IsNullOrWhiteSpace(FilePath))
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
-                    await File.WriteAllBytesAsync(FilePath, bytes);
-                }
+                if (string.IsNullOrWhiteSpace(FilePath))
+                    return;
+
+                Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
+                await File.WriteAllBytesAsync(FilePath, bytes);
             }
             catch (Exception e)
             {

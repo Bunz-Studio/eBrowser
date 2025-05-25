@@ -14,7 +14,7 @@
                     <TextBlock x:Name="PageLabel" Grid.Column="1" TextAlignment="Center" VerticalAlignment="Center" Text="1/75"/>
                     <Button x:Name="NextPageButton" Grid.Column="2" Content="&gt;" Click="NextPageButton_OnClick"/>
                 </Grid>
-                <Label Grid.Row="2" Content="1920x1080 | Gif | 999 MB" HorizontalAlignment="Center"/>
+                <Label x:Name="BasicInfoLabel" Grid.Row="2" Content="1920x1080 | Gif | 999 MB" HorizontalAlignment="Center"/>
                 <Grid VerticalAlignment="Stretch" Grid.Row="3" RowSpacing="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
