@@ -14,6 +14,7 @@ public partial class MainWindow : Window
     readonly HomePage _homePage = new();
     readonly ListPage _listPage = new();
     readonly ViewPage _viewPage = new();
+    readonly SettingsPage _settingsPage = new();
 
     public MainWindow()
     {
@@ -79,6 +80,19 @@ public partial class MainWindow : Window
         Content = _listPage;
         _listPage.InitializeNewState(obj);
         mode = MenuMode.Listing;
+    }
+
+    public void BackFromSettings()
+    {
+        Content = _listPage;
+        mode = MenuMode.Listing;
+    }
+    
+    public void OpenSettings()
+    {
+        Content = _settingsPage;
+        _settingsPage.RefreshSettings();
+        mode = MenuMode.Settings;
     }
 
     public void OnKeyDownHere(object? sender, KeyEventArgs e)
@@ -174,7 +188,7 @@ public partial class MainWindow : Window
     }
     void Window_OnClosing(object? sender, WindowClosingEventArgs e)
     {
-        if (ForceClose)
+        if (ForceClose || !ListPage.Settings.HideToTray)
             return;
 
         e.Cancel = true;

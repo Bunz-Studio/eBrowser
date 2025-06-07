@@ -3,6 +3,50 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="eBrowser.SettingsPage">
-    Welcome to Avalonia!
+             x:Class="eBrowser.SettingsPage" Padding="5">
+    <StackPanel Spacing="5">
+        <Grid ColumnDefinitions="*, Auto">
+            <Label Content="Settings" FontSize="24"/>
+            <Button Grid.Column="1" Content="Back" Click="BackButton_OnClick"/>
+        </Grid>
+        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="5">
+            <StackPanel Spacing="5">
+                <Label FontSize="18">e621 Account</Label>
+                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="5">
+                    <Label Content="Username" VerticalAlignment="Center"/>
+                    <TextBox x:Name="UsernameBox" Grid.Column="1"/>
+                </Grid>
+                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="5">
+                    <Label Content="API Key" VerticalAlignment="Center"/>
+                    <TextBox x:Name="ApiKeyBox" Grid.Column="1"/>
+                </Grid>
+                <Button Content="Save" Click="SaveButton_OnClick"></Button>
+            </StackPanel>
+        </Border>
+        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="5">
+            <StackPanel Spacing="5">
+                <Label FontSize="18">Application</Label>
+                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="5">
+                    <Label Content="Hide to Tray Icon" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="HideToTrayBox" Grid.Column="1" IsChecked="True" Click="HideToTrayBox_OnClick"/>
+                </Grid>
+                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="5">
+                    <Label Content="Autoplay Videos" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="AutoplayVideosBox" Grid.Column="1" IsChecked="True" Click="AutoplayVideosBox_OnClick"/>
+                </Grid>
+                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="5">
+                    <Label Content="Auto Mute Videos" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="AutomuteVideosBox" Grid.Column="1" IsChecked="True" Click="AutomuteVideosBox_OnClick"/>
+                </Grid>
+                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="5">
+                    <Label Content="Auto Download Images" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="AutoDownloadImagesBox" Grid.Column="1" IsChecked="True" Click="AutoDownloadImagesBox_OnClick"/>
+                </Grid>
+                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="5">
+                    <Label Content="Auto Download Videos" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="AutoDownloadVideosBox" Grid.Column="1" IsChecked="True" Click="AutoDownloadVideosBox_OnClick"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </StackPanel>
 </UserControl>

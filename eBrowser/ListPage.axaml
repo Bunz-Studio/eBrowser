@@ -25,8 +25,10 @@
                         <ComboBoxItem Content="Score"/>
                     </ComboBox>
                 </Grid>
-                <Label Content="Session Details"></Label>
-                <ListBox x:Name="SessionDetails"></ListBox>
+                <Button Content="Settings" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="SettingsButton_OnClick"></Button>
+                <Label x:Name="StatusLabel" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <Label Content="Session Details" IsVisible="False"/>
+                <ListBox x:Name="SessionDetails" IsVisible="False"/>
             </StackPanel>
         </Border>
         <Border x:Name="PostPanel" BorderBrush="Gray" BorderThickness="1" Padding="5">

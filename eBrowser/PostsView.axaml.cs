@@ -16,6 +16,13 @@ namespace eBrowser
         public List<PostItem> Items { get; set; } = [];
         public int Sorting { get; set; }
         
+        public PostsView()
+        {
+            InitializeComponent();
+            Posts = new ePosts();
+            Sorting = 0;
+        }
+
         public PostsView(ePosts posts, int sorting)
         {
             InitializeComponent();

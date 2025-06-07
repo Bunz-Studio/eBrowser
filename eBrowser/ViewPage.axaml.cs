@@ -45,7 +45,7 @@ namespace eBrowser
         async void WebViewOnNavigated(string url, string framename)
         {
             if (CurrentPost == null) return;
-            if (MainWindow.mode != MenuMode.Viewer) return;
+            if (MainWindow.mode != MenuMode.Viewer || !ListPage.Settings.AutoplayVideos) return;
             
             try
             {
@@ -164,7 +164,7 @@ namespace eBrowser
                 }
             }
 
-            BasicInfoLabel.Content = $"{width} x {height} | {post.File.Ext} | {FormatBytes(post.File.Size)} MB";
+            BasicInfoLabel.Content = $"{width} x {height} | {post.File.Ext} | {FormatBytes(post.File.Size)}";
             
             var ext = post.File.Ext ?? "png";
             if (videoFormats.Contains(ext.ToLower())) {
@@ -172,20 +172,28 @@ namespace eBrowser
                     OpenHTMLStringToFile(
                         VideoHtml
                             .Replace("{VIDEO_URL}", "file:///" + FilePath.Replace("\\", "/"))
-                            .Replace("{ADDITIONAL_PARAM}", "")
+                            .Replace("{ADDITIONAL_PARAM}", ListPage.Settings.AutomuteVideos ? " muted" : "")
                     );
                 else
                     OpenHTMLStringToFile(
                         VideoHtml
                             .Replace("{VIDEO_URL}", FileUrl)
-                            .Replace("{ADDITIONAL_PARAM}", ""));
+                            .Replace("{ADDITIONAL_PARAM}", ListPage.Settings.AutomuteVideos ? " muted" : ""));
+
+                if (ListPage.Settings.AutoDownloadVideos) {
+                    DownloadFile();
+                }
             } else {
                 if (File.Exists(FilePath))
                     OpenHTMLStringToFile(ImageHtml.Replace("{IMAGE_URL}", "file:///" + FilePath.Replace("\\", "/")));
                 else
                     OpenHTMLStringToFile(ImageHtml.Replace("{IMAGE_URL}", FileUrl));
+
+                if (ListPage.Settings.AutoDownloadImages) {
+                    DownloadFile();
+                }
             }
-            DownloadFile();
+            
             if (webView.IsAttachedToVisualTree())
             {
                 webView.Focus();

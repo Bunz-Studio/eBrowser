@@ -94,9 +94,4 @@
     <Style Selector="CheckBox">
         <Setter Property="Foreground" Value="#ffffff"/>
     </Style>
-
-    <Style Selector="CheckBox:checked /template/ Border">
-        <Setter Property="Background" Value="#bbb"/>
-        <Setter Property="BorderBrush" Value="#bbb"/>
-    </Style>
 </Styles>

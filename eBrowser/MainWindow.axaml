@@ -5,7 +5,9 @@
         mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="540"
         x:Class="eBrowser.MainWindow"
         WindowState="Maximized"
-        Title="eBrowser" Closing="Window_OnClosing">
+        Icon="Assets/Icon.ico"
+        Title="eBrowser" 
+        Closing="Window_OnClosing">
         
         <Border Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
                 BorderBrush="Gray" BorderThickness="1" Padding="15" CornerRadius="8">

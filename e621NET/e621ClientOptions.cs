@@ -2,7 +2,7 @@
 {
     public class e621ClientOptions
     {
-        public string UserAgent { get; set; } = "e621NET/0.1";
+        public string UserAgent { get; set; } = "e621NET/0.1 (disotakyu)";
         public string HostUri { get; set; } = "https://e621.net/";
         public e621APICredentials? Credentials { get; set; }
     }

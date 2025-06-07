@@ -15,6 +15,7 @@ namespace eBrowser
     // TODO: Add proper status label for errors and stuff
     public partial class ListPage : UserControl
     {
+        public static AppSettings Settings { get; set; } = new();
         public static ListPage Instance { get; set; } = null!;
         public PostsSession session = new("posts.json".ToPersistPath());
         public int Page { get; set; } = 1;
@@ -30,24 +31,27 @@ namespace eBrowser
             InitializeComponent();
             
             var settingsPath = "settings.json".ToPersistPath();
-            if (File.Exists(settingsPath))
-            {
-                var settings = JsonSerializer.Deserialize<PostSettings>(File.ReadAllText(settingsPath));
-                if (settings != null)
-                {
-                    SortBox.SelectedIndex = settings.SortIndex;
-                }
-            }
+            if (!File.Exists(settingsPath))
+                return;
+
+            var settings = JsonSerializer.Deserialize<AppSettings>(File.ReadAllText(settingsPath));
+            if (settings == null)
+                return;
+
+            Settings = settings;
+            SortBox.SelectedIndex = settings.SortIndex;
+            
+            if (Settings.Username == null || string.IsNullOrWhiteSpace(Settings.Username) || Settings.APIKey == null || string.IsNullOrWhiteSpace(Settings.APIKey))
+                return;
+            
+            e621Client.Current.AddCredentials(new e621APICredentials(Settings.Username, Settings.APIKey));
         }
         
         public void SaveSettings()
         {
             if (SortBox == null) return;
-            var settings = new PostSettings()
-            {
-                SortIndex = SortBox.SelectedIndex
-            };
-            File.WriteAllText("settings.json".ToPersistPath(), JsonSerializer.Serialize(settings));
+            Settings.SortIndex = SortBox.SelectedIndex;
+            File.WriteAllText("settings.json".ToPersistPath(), JsonSerializer.Serialize(Settings));
         }
         
         public void InitializeNewState(ePosts data)
@@ -118,8 +122,8 @@ namespace eBrowser
                 if (SearchBox.Text == null || string.IsNullOrWhiteSpace(SearchBox.Text))
                 {
                     Console.WriteLine("Please enter a search query");
-                    // StatusLabel.IsVisible = true;
-                    // StatusLabel.Content = "Please enter a search query";
+                    StatusLabel.IsVisible = true;
+                    StatusLabel.Content = "Please enter a search query";
                     return;
                 }
             
@@ -133,7 +137,7 @@ namespace eBrowser
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
-                    // StatusLabel.Content = ex.Message;
+                    StatusLabel.Content = ex.Message;
                 }
                 IsEnabled = true;
             }
@@ -233,6 +237,11 @@ namespace eBrowser
             }
             IsEnabled = true;
         }
+        
+        void SettingsButton_OnClick(object? sender, RoutedEventArgs e)
+        {
+            MainWindow.Instance.OpenSettings();
+        }
     }
 
     public class PostClickedArgs(ePosts posts, int index) : EventArgs
@@ -241,10 +250,25 @@ namespace eBrowser
         public int Index { get; set; } = index;
     }
 
-    public class PostSettings
+    public class AppSettings
     {
         [JsonPropertyName("sort_index")]
         public int SortIndex { get; set; }
+        [JsonPropertyName("username")]
+        public string? Username { get; set; }
+        [JsonPropertyName("api_key")]
+        public string? APIKey { get; set; }
+
+        [JsonPropertyName("hide_to_tray")]
+        public bool HideToTray { get; set; } = true;
+        [JsonPropertyName("autoplay_videos")]
+        public bool AutoplayVideos { get; set; } = true;
+        [JsonPropertyName("automute_videos")]
+        public bool AutomuteVideos { get; set; } = true;
+        [JsonPropertyName("auto_download_images")]
+        public bool AutoDownloadImages { get; set; } = true;
+        [JsonPropertyName("auto_download_videos")]
+        public bool AutoDownloadVideos { get; set; } = true;
     }
 }
 
