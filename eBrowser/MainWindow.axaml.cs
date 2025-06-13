@@ -101,7 +101,7 @@ public partial class MainWindow : Window
         {
             case Key.Right:
             {
-                if (Equals(Content, _listPage) && _listPage.IsEnabled)
+                if (Equals(Content, _listPage) && _listPage.IsEnabled && IsFocused)
                 {
                     e.Handled = true;
                     _listPage.NextPage();
@@ -116,7 +116,7 @@ public partial class MainWindow : Window
             }
             case Key.Left:
             {
-                if (Equals(Content, _listPage) && _listPage.IsEnabled)
+                if (Equals(Content, _listPage) && _listPage.IsEnabled && IsFocused)
                 {
                     e.Handled = true;
                     _listPage.PreviousPage();
