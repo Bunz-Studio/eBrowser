@@ -9,7 +9,7 @@ namespace eBrowser
         public static string persistentPath { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/eBrowser/";
         private static string _persistentPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/eBrowser/";
 
-        public static void PushPersistentPath(string path) => persistentPath = path;
+        public static void OverridePersistentPath(string path) => persistentPath = path;
         public static void PopPersistentPath() => persistentPath = _persistentPath;
 
         public static string ToPersistPathOverride(this string path) =>

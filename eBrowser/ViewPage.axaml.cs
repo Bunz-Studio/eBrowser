@@ -287,7 +287,9 @@ namespace eBrowser
                 if (string.IsNullOrWhiteSpace(FilePath))
                     return;
 
-                Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
+                var directoryPath = Path.GetDirectoryName(FilePath);
+                if (directoryPath != null && !Directory.Exists(directoryPath))
+                    Directory.CreateDirectory(directoryPath);
                 await File.WriteAllBytesAsync(FilePath, bytes);
             }
             catch (Exception e)

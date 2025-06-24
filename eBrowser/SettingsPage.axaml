@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="eBrowser.SettingsPage" Padding="5">
+  <ScrollViewer>
     <StackPanel Spacing="5">
         <Grid ColumnDefinitions="*, Auto">
             <Label Content="Settings" FontSize="24"/>
@@ -48,5 +49,24 @@
                 </Grid>
             </StackPanel>
         </Border>
+        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="5">
+            <StackPanel Spacing="5">
+                <Label FontSize="18">Saving &amp; Caching</Label>
+                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="5">
+                    <Label Content="Use custom path" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="UseCustomPathBox" Grid.Column="1" Click="CheckBox_Click"/>
+                </Grid>
+                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="5">
+                    <Label Content="Custom path" VerticalAlignment="Center"/>
+                    <TextBox x:Name="CustomPathBox" IsEnabled="False" Grid.Column="1" TextChanged="CustomPathBox_Changed"/>
+                </Grid>
+                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="5">
+                    <Label Content="Naming scheme" VerticalAlignment="Center"/>
+                    <TextBox x:Name="NamingSchemeBox" Grid.Column="1" TextChanged="NamingSchemeBox_Changed"/>
+                </Grid>
+                <Button Content="Open Folder" Click="OpenButton_Click"></Button>
+            </StackPanel>
+        </Border>
     </StackPanel>
+  </ScrollViewer>
 </UserControl>

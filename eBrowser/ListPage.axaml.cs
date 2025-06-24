@@ -40,6 +40,9 @@ namespace eBrowser
 
             Settings = settings;
             SortBox.SelectedIndex = settings.SortIndex;
+            PostFileNamer.FileNameFormat = settings.NameScheme;
+            if (settings.UseCustomPath && settings.CustomPath != null)
+                LocalStorage.OverridePersistentPath(settings.CustomPath);
             
             if (Settings.Username == null || string.IsNullOrWhiteSpace(Settings.Username) || Settings.APIKey == null || string.IsNullOrWhiteSpace(Settings.APIKey))
                 return;
@@ -269,6 +272,13 @@ namespace eBrowser
         public bool AutoDownloadImages { get; set; } = true;
         [JsonPropertyName("auto_download_videos")]
         public bool AutoDownloadVideos { get; set; } = true;
+
+        [JsonPropertyName("use_custom_path")]
+        public bool UseCustomPath { get; set; } = false;
+        [JsonPropertyName("custom_path")]
+        public string? CustomPath { get; set; }
+        [JsonPropertyName("name_scheme")]
+        public string NameScheme { get; set; } = "{artist}-{id}{ext}";
     }
 }
 

@@ -1,9 +1,7 @@
 using System;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using e621NET;
 using e621NET.Data.Posts;
 
@@ -11,7 +9,7 @@ namespace eBrowser
 {
     public partial class HomePage : UserControl
     {
-        public event Action<ePosts> onSearchFinished;
+        public event Action<ePosts>? onSearchFinished;
         public HomePage()
         {
             InitializeComponent();
